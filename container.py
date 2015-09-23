@@ -102,3 +102,10 @@ class dockerapi(object):
 				utils.execute("rm -f config/%s" % (result['Id'][0:12]))
 				utils.execute("touch %s/%s" % (netname,ipaddress))
 			
+	def commit_container(self,name,repository,tag):
+		if name:
+			self.connection.commit(container=name,repository=repository,tag=tag)
+		else:
+			return "please choice a container"
+
+	
