@@ -8,7 +8,7 @@ import os
 class dockerapi(object):
 	def __init__(self,url):
 		self.connection=docker.Client(base_url=url)
-		self.path="config/"
+		self.path="/etc/config/"
 		self.net=network.network()
 	
 	def get_config(self,Id):
