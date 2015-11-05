@@ -4,6 +4,7 @@ import container
 import network
 
 ContainerApi=container.dockerapi(url="tcp://0.0.0.0:2375")
+NetworkApi=network.network()
 
 #create container
 @route("/create",method="POST")
@@ -53,6 +54,29 @@ def stop(ContainName):
 		return {"result":ContainName+" is stoped"}
 	elif result=="stopping":
 		return {"result":ContainName+" is stopping"}
+
+
+#list containers
+@route("/list/container",method="GET")
+
+def list_container():
+	result=ContainerApi.list_container()
+	return {"lists":result}
+
+
+#create network
+@route("/network/create",method="POST")
+
+def network_create():
+	body = request.json
+	NetName=body.get("name")
+	cidr=body.get("cidr")
+	NetworkApi.create_network(NetName,cidr)
+	return {"result":"sucess",
+		"NetName":NetName,
+		"cidr":cidr
+		}
+
 
 
 run(host="0.0.0.0",port="8000")

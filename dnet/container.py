@@ -13,6 +13,7 @@ class dockerapi(object):
 		else:
 			utils.execute("mkdir /etc/config")
 		self.path="/etc/config/"
+		self.netpath="/etc/network/"
 		self.net=network.network()
 	
 	def get_config(self,Id):
@@ -48,7 +49,10 @@ class dockerapi(object):
 		Id=result['Id'][0:12]
 		self.start_container(name=name)
 		Pid=self.get_pid(name=name)
-		ipaddress=self.net.get_ip(netname)
+		path=self.netpath+netname
+		if os.path.isfile(path+gateway):
+			utils.execute("rm -f %s" % (path+gateway))
+		ipaddress=self.net.get_ip(path)
 		bridgename=self.net.create_bridge(bridge)
 		self.net.contain_net(Id,Pid,bridge,ipaddress,gateway)
 		self.input_file(Id,Pid,ipaddress,name,hostname,bridge,gateway,netname)
@@ -94,7 +98,7 @@ class dockerapi(object):
 			netname=config["netname"]
 			filepath=self.path
 			utils.execute("rm -f %s%s" % (filepath,result['Id'][0:12]))
-			utils.execute("touch %s/%s" % (netname,ipaddress))
+			utils.execute("touch %s/%s" % (self.netpath+netname,ipaddress))
 		else:
 			self.connection.remove_container(container=name)
 			config=self.get_config(result['Id'][0:12])

@@ -5,17 +5,19 @@ import netaddr
 
 class network(object):
 	def __init__(self):
-		pass
+		self.path="/etc/network/"
 
 	def create_network(self,name,cidr):
-	
+		path=self.path+name
 		if name:
-			if os.path.isdir(name):
+			if os.path.isdir(path):
 				return name+"  is exist"
 			else:
-				os.system("mkdir ./%s" % name)
+				os.system("mkdir -p %s" % path)
+		cc=str(netaddr.IPNetwork(cidr)).split('/')[0]
 		for i in netaddr.IPNetwork(cidr):
-			utils.execute("touch %s/%s" % (name,i))
+			utils.execute("touch %s/%s" % (path,i))
+			utils.execute("rm -f %s/%s" % (path,cc))
 	
 	def get_ip(self,name):
 		files = os.listdir(name)
