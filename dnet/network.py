@@ -30,6 +30,7 @@ class network(object):
 			else:
 				utils.execute("brctl addbr %s" % bridgename)
 				utils.execute("ip link set %s up" % bridgename)
+				utils.execute("brctl addif %s eth1" % bridgename)
 				return bridgename
 	
 
@@ -39,6 +40,10 @@ class network(object):
 		utils.execute("ip link set %s up" % ("t-"+Id))
 		utils.execute("ip link set %s up" % ("p-"+Id))
 		utils.execute("brctl addif %s %s" % (bridgename,"t-"+Id))
+		if os.path.isdir("/var/run/netns"):
+			pass
+		else:
+			utils.execute("mkdir /var/run/netns")
 		utils.execute("ln -s /proc/%s/ns/net /var/run/netns/%s" %(Pid,"nets-"+Id))
 		utils.execute("ip link set %s netns %s" %("p-"+Id,"nets-"+Id))
 		utils.execute("ip netns exec %s  ip link set %s name eth0" %("nets-"+Id,"p-"+Id))
@@ -50,7 +55,7 @@ class network(object):
 	def delete_net(self,Id):
 		if Id:
 			utils.execute("rm -f /var/run/netns/%s" % ("nets-"+Id))
-		if os.path.isfile("/sys/class/net/%s" % ("t-"+Id)):
+		if os.path.isdir("/sys/class/net/%s" % ("t-"+Id)):
 			utils.execute("ip link del %s" % ("t-"+Id))
 		else:
 			pass
