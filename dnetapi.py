@@ -65,14 +65,6 @@ def list_container():
 	return {"lists":result}
 
 
-#list containers number
-@route("/list/container/numbers",method="GET")
-
-def lists_containers():
-	result=ContainerApi.lists_container()
-	return {"numbers":result}
-
-
 #create network
 @route("/network/create",method="POST")
 

@@ -7,8 +7,6 @@ class image(object):
 
 	def get_images(self):
 		result= self.connection.images()
-		list=[]
 		for i in result:
-			list.append(i['RepoTags'][0])
-		return list
+			return  i['RepoTags'][0]
 

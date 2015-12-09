@@ -10,9 +10,7 @@ class network(object):
 	def input_file(self,name):
 		file=self.path+"networklist"
 		config=ConfigObj(file,encoding="UTF8")
-		list=[]
-		list.append(name)
-		config['networklist']=list
+		config['networklist']=[]
 		config['networklist'].append(name)
 		config.write()
 		
@@ -34,11 +32,8 @@ class network(object):
 		
 	def list_network(self):
 		file=self.path+"networklist"
-		if os.path.isfile(file):
-			config=ConfigObj(file,encoding="UTF8")
-			return config['networklist']
-		else:
-			return "network is not exist"
+		config=ConfigObj(file,encoding="UTF8")
+		return config['networklist']	
 
 	def get_ip(self,name):
 		files = os.listdir(name)
@@ -71,7 +66,6 @@ class network(object):
 		utils.execute("ip link set %s netns %s" %("p-"+Id,"nets-"+Id))
 		utils.execute("ip netns exec %s  ip link set %s name eth0" %("nets-"+Id,"p-"+Id))
 		utils.execute("ip netns exec %s ip link set eth0  up" % ("nets-"+Id))
-		utils.execute("ip netns exec %s ip link set lo  up" % ("nets-"+Id))
 		utils.execute("ip netns exec %s  ip addr add  %s/24 dev eth0" % ("nets-"+Id,ipaddress))
 		utils.execute("ip netns exec %s ip route add 0.0.0.0/0 via %s dev eth0" % ("nets-"+Id,gateway))
 		utils.execute("ip link set lo up")

@@ -86,7 +86,7 @@ class dockerapi(object):
 			config=configfile["container"]
 			self.connection.start(container=name)
 			Pid=self.get_pid(name=name)
-			self.net.contain_net(config["id"],Pid,config["bridgename"],config["addresses"][0],config["gateway"])
+			self.net.contain_net(config["id"],Pid,config["bridgename"],config["addresses"],config["gateway"])
 			self.update_file(Id,Pid)
 			return "ok"
 		
@@ -96,7 +96,7 @@ class dockerapi(object):
 			self.nstop_container(name)
 			self.connection.remove_container(container=name)
 			config=self.get_config(result['Id'][0:12])
-			ipaddress=config["addresses"][0]
+			ipaddress=config["addresses"]
 			netname=config["netname"]
 			filepath=self.path
 			utils.execute("rm -f %s%s" % (filepath,result['Id'][0:12]))
@@ -107,7 +107,7 @@ class dockerapi(object):
 			if  config is False:
 				pass
 			else:
-				ipaddress=config["addresses"][0]
+				ipaddress=config["addresses"]
 				netname=config["netname"]
 				filepath=self.path
 				Id=config["id"]
@@ -132,10 +132,7 @@ class dockerapi(object):
 				pass
 		return list
 	
-	def lists_container(self):
-		result=self.connection.containers(all=True)
-		list_numbers=len(result)
-		return list_numbers	
+
 	def commit_container(self,name,repository,tag):
 		if name:
 			self.connection.commit(container=name,repository=repository,tag=tag)
